@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -Wl,--dependency-file=CMakeFiles/vtk-composite-test.dir/link.d "CMakeFiles/vtk-composite-test.dir/main.cxx.o" -o vtk-composite-test
