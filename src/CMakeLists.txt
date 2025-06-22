@@ -10,7 +10,10 @@ add_executable(${PROJECT_NAME} main.cxx
 # Set up precompiled headers
 target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${VTK_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    ${VTK_INCLUDE_DIRS}
+    /usr/include/vtk
+)
 
 # Link VTK libraries
 target_link_libraries(${PROJECT_NAME} ${VTK_LIBRARIES})

@@ -1,9 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/biba/projects/vtk-composite-test/build/cmake_install.cmake",
-		"/home/biba/projects/vtk-composite-test/build/deps/vtk/cmake_install.cmake",
-		"/home/biba/projects/vtk-composite-test/build/src/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
