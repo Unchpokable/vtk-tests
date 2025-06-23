@@ -2,7 +2,8 @@
 add_executable(${PROJECT_NAME}  main.cxx
                                 composite_renderer.cxx 
                                 vtk_generators.cxx
-                                utils.cxx)
+                                utils.cxx
+                                common_types.cxx)
 
 # To add more sources: add them to the add_executable line above
 # Example: add_executable(${PROJECT_NAME} main.cxx other_source.cxx another_file.cxx)

@@ -6,6 +6,8 @@ namespace common
 
 struct Vec3d 
 {
+    Vec3d(double x, double y, double z);
+
     double& x() { return data[0]; }
     double& y() { return data[1]; }
     double& z() { return data[2]; }
@@ -23,6 +25,8 @@ private:
 
 struct Colord 
 {
+    Colord(double r, double g, double b);
+
     double& r() { return data[0]; }
     double& g() { return data[1]; }
     double& b() { return data[2]; }

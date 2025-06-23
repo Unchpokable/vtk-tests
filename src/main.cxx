@@ -1,20 +1,27 @@
 #include "pch.h"
 
+#include "composite_renderer.hxx"
+#include "vtk_generators.hxx"
+
 int main(int argc, char** argv) 
 {
-    vtkNew<vtkSphereSource> sphereSource;
-    sphereSource->SetRadius(1.0);
-    sphereSource->SetThetaResolution(30);
-    sphereSource->SetPhiResolution(30);
+    auto composite_renderer = new scene::VtkCompositeSceneRenderer();
 
-    vtkNew<vtkPolyDataMapper> mapper;
-    mapper->SetInputConnection(sphereSource->GetOutputPort());
+    double x{}, y{}, z{};
+    for(auto i = 0; i < 1000; ++i) {
+        common::Colord color(0.3, 0.8, 0.1);
+        common::Vec3d position(x, y, z);
+        auto block = generators::make_sphere(position, 4, color, generators::MEDIUM);
+        composite_renderer->add_block(block);
+        
+        x+=10;
+        y+=10;
+        z+=10;
+    }
 
-    vtkNew<vtkActor> actor;
-    actor->SetMapper(mapper);
+    composite_renderer->update();
 
     vtkNew<vtkRenderer> renderer;
-    renderer->AddActor(actor);
     renderer->SetBackground(0.1, 0.2, 0.4);
 
     vtkNew<vtkRenderWindow> renderWindow;
@@ -27,6 +34,8 @@ int main(int argc, char** argv)
 
     vtkNew<vtkInteractorStyleTrackballCamera> style;
     interactor->SetInteractorStyle(style);
+
+    composite_renderer->set_renderer(renderer);
 
     renderWindow->Render();
     interactor->Start();

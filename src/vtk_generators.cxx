@@ -12,6 +12,7 @@ vtkSmartPointer<vtkPolyData> generators::make_sphere(common::Vec3d& pos, double 
     sphereSource->SetPhiResolution(res);
     sphereSource->SetThetaResolution(res);
     sphereSource->SetRadius(size);
+    sphereSource->Update();
 
     vtkNew<vtkTransformPolyDataFilter> polyDataFilter;
     vtkNew<vtkTransform> transform;

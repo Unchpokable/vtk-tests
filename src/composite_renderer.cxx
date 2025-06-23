@@ -9,6 +9,9 @@ scene::VtkCompositeSceneRenderer::VtkCompositeSceneRenderer()
     _mapper = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
 
     _mapper->SetInputDataObject(_data_set);
+
+    _actor = vtkSmartPointer<vtkActor>::New();
+    _actor->SetMapper(_mapper);
 }
 
 scene::VtkCompositeSceneRenderer::id_type scene::VtkCompositeSceneRenderer::add_block(vtkSmartPointer<vtkPolyData> &poly_data)
@@ -26,21 +29,28 @@ void scene::VtkCompositeSceneRenderer::remove_block(id_type block_id)
 {
     _inserter_id = 0;
     _instance_to_partition.clear();
-    _source_data.erase(block_id);
+    _source_data.erase(block_id);    
+}
 
-    _data_set = vtkSmartPointer<vtkPartitionedDataSet>::New();
+void scene::VtkCompositeSceneRenderer::set_renderer(const vtkSmartPointer<vtkRenderer> &renderer)
+{
+    if(_renderer) {
+        _renderer->RemoveActor(_actor);
+    }
 
-    for(auto& block_data : _source_data | std::views::values) {
-        add_block(block_data);
+    _renderer = renderer;
+
+    if(_actor) {
+        _renderer->AddActor(_actor);
     }
 }
 
-void scene::VtkCompositeSceneRenderer::set_renderer(vtkSmartPointer<vtkRenderer> &renderer)
+void scene::VtkCompositeSceneRenderer::update()
 {
-    _renderer = renderer;
+    rebuild_actor();
 }
 
-void scene::VtkCompositeSceneRenderer::clear() 
+void scene::VtkCompositeSceneRenderer::clear()
 {
     _renderer->RemoveActor(_actor);
 }
@@ -52,4 +62,16 @@ void scene::VtkCompositeSceneRenderer::set_color(id_type block_id, common::Color
 
 void scene::VtkCompositeSceneRenderer::rebuild_actor()
 {
+    _data_set = vtkSmartPointer<vtkPartitionedDataSet>::New();
+    _data_set->SetNumberOfPartitions(_source_data.size());
+    
+    _counter_id = 0;
+    for(auto& [block_id, poly_data] : _source_data) {
+        _data_set->SetPartition(_counter_id, poly_data);
+        _instance_to_partition[block_id] = _counter_id;
+        ++_counter_id;
+    }
+
+    _mapper->SetInputDataObject(_data_set);
+    _mapper->Update();
 }

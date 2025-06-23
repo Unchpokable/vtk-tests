@@ -15,7 +15,7 @@ public:
     id_type add_block(vtkSmartPointer<vtkPolyData>& poly_data);
     void remove_block(id_type block_id);
 
-    void set_renderer(vtkSmartPointer<vtkRenderer>& renderer);
+    void set_renderer(const vtkSmartPointer<vtkRenderer>& renderer);
     
     void update();
     void clear();
