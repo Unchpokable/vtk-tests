@@ -1,1 +1,9 @@
-build/
+/.vscode/*
+!/.vscode/c_cpp_properties.json
+/build/
+/*.log
+/*.ini
+/*.dll
+/*.exe
+/*.lib
+/*.so

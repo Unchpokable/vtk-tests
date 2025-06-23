@@ -5,6 +5,10 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <type_traits>
+#include <concepts>
+#include <ranges>
+#include <array>
 
 // include vtk
 #include <vtk/vtkSmartPointer.h>
@@ -12,10 +16,13 @@
 #include <vtk/vtkRenderer.h>
 #include <vtk/vtkRenderWindowInteractor.h>
 #include <vtk/vtkInteractorStyleTrackballCamera.h>
+#include <vtk/vtkTransformPolyDataFilter.h>
+#include <vtk/vtkTransform.h>
 
 #include <vtk/vtkActor.h>
-#include <vtk/vtkCompositePolyDataMapper2.h>
+#include <vtk/vtkCompositePolyDataMapper.h>
 #include <vtk/vtkMultiBlockDataSet.h>
+#include <vtk/vtkPartitionedDataSet.h>
 #include <vtk/vtkPolyData.h>
 #include <vtk/vtkPolyDataMapper.h>
 #include <vtk/vtkSphereSource.h>

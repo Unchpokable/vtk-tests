@@ -1,32 +1,43 @@
 #ifndef UNC_COMMON_H
 #define UNC_COMMON_H
 
-#define align(type) alignas(sizeof(type))
-
 namespace common 
 {
 
-struct align(float) Vec3f 
+struct Vec3d 
 {
-    float x, y, z;
+    double& x() { return data[0]; }
+    double& y() { return data[1]; }
+    double& z() { return data[2]; }
+    
+    const double& x() const { return data[0]; }
+    const double& y() const { return data[1]; }
+    const double& z() const { return data[2]; }
+    
+    constexpr operator double*() { return data; }
+    constexpr operator const double*() const { return data; }
+
+private:
+    double data[3];
 };
 
-struct align(float) Colorf 
+struct Colord 
 {
-    float r, g, b;
-};
-
-union Position {
-    Vec3f xyz;
-    float raw[3];
-};
-
-union Color {
-    Colorf rgb;
-    float raw[3];
+    double& r() { return data[0]; }
+    double& g() { return data[1]; }
+    double& b() { return data[2]; }
+    
+    const double& r() const { return data[0]; }
+    const double& g() const { return data[1]; }
+    const double& b() const { return data[2]; }
+    
+    constexpr operator double*() { return data; }
+    constexpr operator const double*() const { return data; }
+    
+private:
+    double data[3];
 };
 
 }
-
 
 #endif

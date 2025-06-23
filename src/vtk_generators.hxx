@@ -5,7 +5,9 @@
 
 namespace generators
 {
-    enum Resolution 
+    constexpr double resolution_base = 4.0;
+
+    enum Resolution : int
     {
         DOGSHIT = 1,
         LOW = 2,
@@ -17,8 +19,10 @@ namespace generators
 
 namespace generators 
 {
-vtkSmartPointer<vtkPolyData> make_sphere(common::Position &pos, float size, common::Color &color, Resolution resolution);
-vtkSmartPointer<vtkPolyData> make_cylinder(common::Position &pos, float radius, float length, common::Color &color, Resolution resolution);
+vtkSmartPointer<vtkPolyData> make_sphere(common::Vec3d& pos, double size, common::Colord& color, 
+    Resolution resolution);
+vtkSmartPointer<vtkPolyData> make_cylinder(common::Vec3d& pos, double radius, double length, 
+    common::Colord& color, Resolution resolution);
 }
 
 #endif // VTK generators
