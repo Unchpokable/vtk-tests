@@ -6,7 +6,7 @@ namespace scene
 class VtkCompositeSceneRenderer 
 {
 public:
-    using id_type = int;
+    using id_type = vtkIdType;
 
     id_type add_block(vtkPolyData* polyData);
     bool remove_block(id_type block_id);
@@ -21,4 +21,4 @@ private:
 };
 }
 
-#endif
+#endif // Composite Renderer

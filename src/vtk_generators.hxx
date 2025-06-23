@@ -17,8 +17,8 @@ namespace generators
 
 namespace generators 
 {
-vtkSmartPointer<vtkPolyData> make_sphere(common::Vec3f &pos, float size, common::Colorf &color, Resolution resolution);
-vtkSmartPointer<vtkPolyData> make_cylinder(common::Vec3f &pos, float radius, float length, common::Colorf &color, Resolution resolution);
+vtkSmartPointer<vtkPolyData> make_sphere(common::Position &pos, float size, common::Color &color, Resolution resolution);
+vtkSmartPointer<vtkPolyData> make_cylinder(common::Position &pos, float radius, float length, common::Color &color, Resolution resolution);
 }
 
 #endif // VTK generators

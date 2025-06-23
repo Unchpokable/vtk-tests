@@ -10,9 +10,3 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Add subdirectories
 add_subdirectory(deps/vtk)
 add_subdirectory(src)
-
-# Make VTK modules available to the project
-vtk_module_autoinit(
-    TARGETS ${PROJECT_NAME}
-    MODULES ${VTK_LIBRARIES}
-)
