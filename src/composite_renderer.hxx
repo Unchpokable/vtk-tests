@@ -23,8 +23,6 @@ public:
     void set_color(id_type block_id, common::Colord& color);
 
 private:
-    void rebuild_actor();
-
     id_type _counter_id { 0 };
     id_type _inserter_id { 0 };
 
@@ -34,7 +32,7 @@ private:
     /// @brief maps id of id_counter (global static registered block identifier) to its polydata
     std::unordered_map<id_type, vtkSmartPointer<vtkPolyData>> _source_data;
 
-    vtkSmartPointer<vtkPartitionedDataSet> _data_set;
+    vtkSmartPointer<vtkMultiBlockDataSet> _data_set;
     vtkSmartPointer<vtkCompositePolyDataMapper> _mapper;
     vtkSmartPointer<vtkActor> _actor;
     vtkSmartPointer<vtkRenderer> _renderer;

@@ -20,6 +20,7 @@ vtkSmartPointer<vtkPolyData> generators::make_sphere(common::Vec3d& pos, double 
 
     polyDataFilter->SetTransform(transform);
     polyDataFilter->SetInputData(sphereSource->GetOutput());
+    polyDataFilter->Update();
 
     auto result = vtkSmartPointer<vtkPolyData>::New();
     result->DeepCopy(polyDataFilter->GetOutput());

@@ -9,6 +9,8 @@
 #include <concepts>
 #include <ranges>
 #include <array>
+#include <iostream>
+#include <format>
 
 // include vtk
 #include <vtk/vtkSmartPointer.h>
@@ -27,6 +29,8 @@
 #include <vtk/vtkPolyDataMapper.h>
 #include <vtk/vtkSphereSource.h>
 #include <vtk/vtkNew.h>
+#include <vtk/vtkCompositeDataDisplayAttributes.h>
+#include <vtk/vtkCallbackCommand.h>
 
 #include <vtk/vtkSphere.h>
 #include <vtk/vtkCylinder.h>
