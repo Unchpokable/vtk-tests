@@ -76,5 +76,8 @@ void scene::VtkCompositeSceneRenderer::clear()
 
 void scene::VtkCompositeSceneRenderer::set_color(id_type block_id, common::Colord& color)
 {
-    auto poly_data = _source_data[block_id];
+    auto internal_block_id = _instance_to_partition[block_id];
+
+    _mapper->SetBlockColor(internal_block_id, color);
+    _mapper->Update();
 }

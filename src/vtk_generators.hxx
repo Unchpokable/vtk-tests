@@ -5,16 +5,16 @@
 
 namespace generators
 {
-    constexpr double resolution_base = 4.0;
+constexpr double resolution_base = 4.0;
 
-    enum Resolution : int
-    {
-        DOGSHIT = 1,
-        LOW = 2,
-        MEDIUM = 4,
-        HIGH = 8,
-        PLEASEHELP = 16
-    };
+enum Resolution : int
+{
+    DOGSHIT = 1,
+    LOW = 2,
+    MEDIUM = 4,
+    HIGH = 8,
+    PLEASEHELP = 16
+};
 }
 
 namespace generators 
