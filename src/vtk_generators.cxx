@@ -24,6 +24,23 @@ vtkSmartPointer<vtkPolyData> generators::make_sphere(common::Vec3d& pos, double 
 
     auto result = vtkSmartPointer<vtkPolyData>::New();
     result->DeepCopy(polyDataFilter->GetOutput());
+    
+    // Add colors by cells using vtkUnsignedCharArray with RGB channels
+    vtkNew<vtkUnsignedCharArray> colors;
+    colors->SetNumberOfComponents(3);
+    colors->SetName("Colors");
+    
+    // Convert double color to unsigned char array
+    auto colorArray = utils::make_uchar_color(color);
+    
+    // Set the same color for all cells
+    vtkIdType numberOfCells = result->GetNumberOfCells();
+    colors->SetNumberOfTuples(numberOfCells);
+    for (vtkIdType i = 0; i < numberOfCells; ++i) {
+        colors->SetTuple3(i, colorArray[0], colorArray[1], colorArray[2]);
+    }
+    
+    result->GetCellData()->SetScalars(colors);
     return result;
 }
 

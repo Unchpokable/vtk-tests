@@ -1,8 +1,8 @@
 # Add executable with main source
 add_executable(${PROJECT_NAME}  main.cxx
                                 composite_renderer.cxx 
-                                vtk_generators.cxx
                                 utils.cxx
+                                vtk_generators.cxx
                                 common_types.cxx)
 
 # To add more sources: add them to the add_executable line above

@@ -77,7 +77,7 @@ int main(int argc, char** argv)
             common::Vec3d position(x, y, z);
             auto block = generators::make_sphere(position, 4, color, generators::MEDIUM);
             auto block_id = composite_renderer->add_block(block);
-            composite_renderer->set_color(block_id, color);
+            //composite_renderer->set_color(block_id, color);
 
             x+=10;
             y+=10;

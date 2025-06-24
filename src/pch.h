@@ -20,6 +20,7 @@
 #include <vtk/vtkInteractorStyleTrackballCamera.h>
 #include <vtk/vtkTransformPolyDataFilter.h>
 #include <vtk/vtkTransform.h>
+#include <vtk/vtkCellData.h>
 
 #include <vtk/vtkActor.h>
 #include <vtk/vtkCompositePolyDataMapper.h>
