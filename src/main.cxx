@@ -74,6 +74,7 @@ int main(int argc, char** argv)
             mapper->SetInputData(block);
 
             mapper->Update();
+            mapper->StaticOn();
 
             vtkNew<vtkActor> actor;
             actor->SetMapper(mapper);
