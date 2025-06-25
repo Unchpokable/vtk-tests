@@ -3,7 +3,7 @@
 #include "vtk_generators.hxx"
 #include "utils.hxx"
 
-vtkSmartPointer<vtkPolyData> generators::make_sphere(common::Vec3d& pos, double size, common::Colord& color, 
+vtkSmartPointer<vtkPolyData> generators::make_sphere(const common::Vec3d& pos, double size, const common::Colord& color, 
     Resolution resolution)
 {
     auto res = utils::cpow(generators::resolution_base, static_cast<int>(resolution));
@@ -44,8 +44,8 @@ vtkSmartPointer<vtkPolyData> generators::make_sphere(common::Vec3d& pos, double 
     return result;
 }
 
-vtkSmartPointer<vtkPolyData> generators::make_cylinder(common::Vec3d& pos, double radius, double length, 
-    common::Colord& color, Resolution resolution)
+vtkSmartPointer<vtkPolyData> generators::make_cylinder(const common::Vec3d& pos, double radius, double length, 
+    const common::Colord& color, Resolution resolution)
 {
     return vtkSmartPointer<vtkPolyData>();
 }

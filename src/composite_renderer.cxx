@@ -27,11 +27,13 @@ scene::VtkCompositeSceneRenderer::id_type scene::VtkCompositeSceneRenderer::add_
     return _counter_id;
 }
 
-void scene::VtkCompositeSceneRenderer::remove_block(id_type block_id)
+void scene::VtkCompositeSceneRenderer::remove_block(id_type instance_id)
 {
-    _inserter_id = 0;
-    _instance_to_partition.clear();
-    _source_data.erase(block_id);    
+    if(!_instance_to_partition.contains(instance_id)) {
+        throw std::runtime_error("Trying to remove a non-existing block!");
+    }
+
+    _source_data.erase(instance_id);    
 }
 
 void scene::VtkCompositeSceneRenderer::set_renderer(const vtkSmartPointer<vtkRenderer> &renderer)
@@ -74,10 +76,15 @@ void scene::VtkCompositeSceneRenderer::clear()
     _renderer->RemoveActor(_actor);
 }
 
-void scene::VtkCompositeSceneRenderer::set_color(id_type block_id, common::Colord& color)
+void scene::VtkCompositeSceneRenderer::set_color(id_type instance_id, common::Colord& color)
 {
-    auto internal_block_id = _instance_to_partition[block_id];
+    if(!_instance_to_partition.contains(instance_id)) {
+        throw std::runtime_error("Trying to modify non-existing block!");
+    }
+
+    auto internal_block_id = _instance_to_partition[instance_id];
 
     _mapper->SetBlockColor(internal_block_id, color);
+    _mapper->Modified();
     _mapper->Update();
 }

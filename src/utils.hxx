@@ -28,9 +28,9 @@ constexpr T cpow(T base, int exponent)
     return result;
 }
 
-inline constexpr std::array<unsigned char, 3> make_uchar_color(common::Colord& color) 
+inline constexpr std::array<unsigned char, 3> make_uchar_color(const common::Colord& color) 
 {
-    auto data = (double*)color;
+    auto data = static_cast<const double*>(color);
 
     return {
         static_cast<unsigned char>(color[0] * 255), 

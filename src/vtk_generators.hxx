@@ -19,10 +19,10 @@ enum Resolution : int
 
 namespace generators 
 {
-vtkSmartPointer<vtkPolyData> make_sphere(common::Vec3d& pos, double size, common::Colord& color, 
+vtkSmartPointer<vtkPolyData> make_sphere(const common::Vec3d& pos, double size, const common::Colord& color, 
     Resolution resolution);
-vtkSmartPointer<vtkPolyData> make_cylinder(common::Vec3d& pos, double radius, double length, 
-    common::Colord& color, Resolution resolution);
+vtkSmartPointer<vtkPolyData> make_cylinder(const common::Vec3d& pos, double radius, double length, 
+    const common::Colord& color, Resolution resolution);
 }
 
 #endif // VTK generators

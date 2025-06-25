@@ -12,15 +12,21 @@ public:
 
     VtkCompositeSceneRenderer();
 
+    /// @brief Adds a new polydata block
+    /// @param poly_data block to be added
+    /// @return unique internal identifier of added block. Should be used as block_id parameter in any modification function of \c this instance
     id_type add_block(vtkSmartPointer<vtkPolyData>& poly_data);
-    void remove_block(id_type block_id);
+
+    /// @brief Removes a block bound to given instance id
+    /// @param instance_id identifier of instance to be removed. Should be a unique global identifier (returned by \c add_block)
+    void remove_block(id_type instance_id);
 
     void set_renderer(const vtkSmartPointer<vtkRenderer>& renderer);
     
     void update();
     void clear();
 
-    void set_color(id_type block_id, common::Colord& color);
+    void set_color(id_type instance_id, common::Colord& color);
 
 private:
     id_type _counter_id { 0 };
