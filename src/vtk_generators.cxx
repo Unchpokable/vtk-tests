@@ -3,8 +3,7 @@
 #include "vtk_generators.hxx"
 #include "utils.hxx"
 
-vtkSmartPointer<vtkPolyData> generators::make_sphere(const common::Vec3d& pos, double size, const common::Colord& color, 
-    Resolution resolution)
+vtkSmartPointer<vtkPolyData> generators::make_sphere(const common::Vec3d& pos, double size, Resolution resolution)
 {
     auto res = utils::cpow(generators::resolution_base, static_cast<int>(resolution));
 
@@ -25,19 +24,24 @@ vtkSmartPointer<vtkPolyData> generators::make_sphere(const common::Vec3d& pos, d
     auto result = vtkSmartPointer<vtkPolyData>::New();
     result->DeepCopy(polyDataFilter->GetOutput());
     
-    // Add colors by cells using vtkUnsignedCharArray with RGB channels
+    return result;
+}
+
+vtkSmartPointer<vtkPolyData> generators::make_sphere(const common::Vec3d& pos, double size, const common::Colord& color,
+    Resolution resolution)
+{
+    auto result = make_sphere(pos, size, resolution);
+    
     vtkNew<vtkUnsignedCharArray> colors;
     colors->SetNumberOfComponents(3);
     colors->SetName("Colors");
     
-    // Convert double color to unsigned char array
-    auto colorArray = utils::make_uchar_color(color);
+    auto color_array = utils::make_uchar_color(color);
     
-    // Set the same color for all cells
-    vtkIdType numberOfCells = result->GetNumberOfCells();
-    colors->SetNumberOfTuples(numberOfCells);
-    for (vtkIdType i = 0; i < numberOfCells; ++i) {
-        colors->SetTuple3(i, colorArray[0], colorArray[1], colorArray[2]);
+    vtkIdType cells_count = result->GetNumberOfCells();
+    colors->SetNumberOfTuples(cells_count);
+    for (vtkIdType i = 0; i < cells_count; ++i) {
+        colors->SetTuple3(i, color_array[0], color_array[1], color_array[2]);
     }
     
     result->GetCellData()->SetScalars(colors);

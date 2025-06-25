@@ -11,14 +11,15 @@ enum Resolution : int
 {
     DOGSHIT = 1,
     LOW = 2,
-    MEDIUM = 4,
-    HIGH = 8,
-    PLEASEHELP = 16
+    MEDIUM = 3,
+    HIGH = 4,
+    PLEASEHELP = 5
 };
 }
 
 namespace generators 
 {
+vtkSmartPointer<vtkPolyData> make_sphere(const common::Vec3d& pos, double size, Resolution resolution);
 vtkSmartPointer<vtkPolyData> make_sphere(const common::Vec3d& pos, double size, const common::Colord& color, 
     Resolution resolution);
 vtkSmartPointer<vtkPolyData> make_cylinder(const common::Vec3d& pos, double radius, double length, 

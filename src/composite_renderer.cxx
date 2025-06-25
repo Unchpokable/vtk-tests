@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "composite_renderer.hxx"
+#include "utils.hxx"
 
 scene::VtkCompositeSceneRenderer::VtkCompositeSceneRenderer()
 {
@@ -24,7 +25,7 @@ scene::VtkCompositeSceneRenderer::id_type scene::VtkCompositeSceneRenderer::add_
     ++_inserter_id;
     ++_counter_id;
 
-    return _counter_id;
+    return _counter_id - 1;
 }
 
 void scene::VtkCompositeSceneRenderer::remove_block(id_type instance_id)
@@ -67,8 +68,6 @@ void scene::VtkCompositeSceneRenderer::update()
     _mapper->StaticOn();
 
     _mapper->Update();
-
-    _actor->SetMapper(_mapper);
 }
 
 void scene::VtkCompositeSceneRenderer::clear()
@@ -82,9 +81,26 @@ void scene::VtkCompositeSceneRenderer::set_color(id_type instance_id, common::Co
         throw std::runtime_error("Trying to modify non-existing block!");
     }
 
-    auto internal_block_id = _instance_to_partition[instance_id];
+    auto data = _source_data[instance_id];
 
-    _mapper->SetBlockColor(internal_block_id, color);
+    vtkNew<vtkUnsignedCharArray> colors;
+    colors->SetNumberOfComponents(3);
+    colors->SetName("Colors");
+    
+    auto color_array = utils::make_uchar_color(color);
+    
+    vtkIdType cells_count = data->GetNumberOfCells();
+    std::cout << "cells number: " << cells_count << "\n";
+    std::cout << "block id: " << instance_id << "\n";
+
+    colors->SetNumberOfTuples(cells_count);
+    for (vtkIdType i = 0; i < cells_count; ++i) {
+        colors->SetTuple3(i, color_array[0], color_array[1], color_array[2]);
+    }
+
+    data->GetCellData()->SetScalars(colors);
+    data->Modified();
+
     _mapper->Modified();
     _mapper->Update();
 }
