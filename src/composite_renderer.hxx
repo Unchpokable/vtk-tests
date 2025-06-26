@@ -28,12 +28,17 @@ public:
 
     void set_color(id_type instance_id, common::Colord& color);
 
+    id_type get_instance_id(id_type block_id);
+
+    const vtkPolyData* get_block(id_type block_id);
+    const vtkPolyData* get_instance_block(id_type instance_id);
+
 private:
     id_type _counter_id { 0 };
     id_type _inserter_id { 0 };
 
     /// @brief maps global static registered block identifier to its partition inserter index
-    std::unordered_map<id_type, id_type> _instance_to_partition;
+    std::unordered_map<id_type, id_type> _instance_to_block;
 
     /// @brief maps id of id_counter (global static registered block identifier) to its polydata
     std::unordered_map<id_type, vtkSmartPointer<vtkPolyData>> _source_data;

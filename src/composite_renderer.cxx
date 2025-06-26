@@ -21,7 +21,7 @@ scene::VtkCompositeSceneRenderer::VtkCompositeSceneRenderer()
 scene::VtkCompositeSceneRenderer::id_type scene::VtkCompositeSceneRenderer::add_block(vtkSmartPointer<vtkPolyData> &poly_data)
 {
     _source_data.insert_or_assign(_counter_id, poly_data);
-    _instance_to_partition.insert_or_assign(_counter_id, _inserter_id);
+    _instance_to_block.insert_or_assign(_counter_id, _inserter_id);
     ++_inserter_id;
     ++_counter_id;
 
@@ -30,7 +30,7 @@ scene::VtkCompositeSceneRenderer::id_type scene::VtkCompositeSceneRenderer::add_
 
 void scene::VtkCompositeSceneRenderer::remove_block(id_type instance_id)
 {
-    if(!_instance_to_partition.contains(instance_id)) {
+    if(!_instance_to_block.contains(instance_id)) {
         throw std::runtime_error("Trying to remove a non-existing block!");
     }
 
@@ -53,19 +53,18 @@ void scene::VtkCompositeSceneRenderer::set_renderer(const vtkSmartPointer<vtkRen
 void scene::VtkCompositeSceneRenderer::update()
 {
     _inserter_id = 0;
-    _instance_to_partition.clear();
+    _instance_to_block.clear();
 
     _data_set = vtkSmartPointer<vtkMultiBlockDataSet>::New();
     _data_set->SetNumberOfBlocks(_source_data.size());
 
     for(auto& [instance_key, instance_data] : _source_data) {
-        _instance_to_partition.insert_or_assign(instance_key, _inserter_id);
+        _instance_to_block.insert_or_assign(instance_key, _inserter_id);
         _data_set->SetBlock(_inserter_id, instance_data);
         ++_inserter_id;
     }
 
     _mapper->SetInputDataObject(_data_set);
-    _mapper->StaticOn();
 
     _mapper->Update();
 }
@@ -77,7 +76,7 @@ void scene::VtkCompositeSceneRenderer::clear()
 
 void scene::VtkCompositeSceneRenderer::set_color(id_type instance_id, common::Colord& color)
 {
-    if(!_instance_to_partition.contains(instance_id)) {
+    if(!_instance_to_block.contains(instance_id)) {
         throw std::runtime_error("Trying to modify non-existing block!");
     }
 
@@ -89,12 +88,10 @@ void scene::VtkCompositeSceneRenderer::set_color(id_type instance_id, common::Co
     
     auto color_array = utils::make_uchar_color(color);
     
-    vtkIdType cells_count = data->GetNumberOfCells();
-    std::cout << "cells number: " << cells_count << "\n";
-    std::cout << "block id: " << instance_id << "\n";
+    auto cells_count = data->GetNumberOfCells();
 
     colors->SetNumberOfTuples(cells_count);
-    for (vtkIdType i = 0; i < cells_count; ++i) {
+    for (id_type i = 0; i < cells_count; ++i) {
         colors->SetTuple3(i, color_array[0], color_array[1], color_array[2]);
     }
 

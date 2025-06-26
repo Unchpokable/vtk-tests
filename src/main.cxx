@@ -46,7 +46,7 @@ int main(int argc, char** argv)
         auto composite_renderer = new scene::VtkCompositeSceneRenderer();
 
         double x{}, y{}, z{};
-        for(auto i = 0; i < 250; ++i) {
+        for(auto i = 0; i < 5120; ++i) {
             // Claude codes lmao
             // Generate rainbow gradient: hue varies from 0 to 360 degrees
             float hue = (float(i) / 129.0f) * 360.0f;
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         std::cout << "Requested actors rendering\n";
 
         double x{}, y{}, z{};
-        for(auto i = 0; i < 130; ++i) {
+        for(auto i = 0; i < 5120; ++i) {
             common::Colord color(0.3, 0.8, 0.1);
             common::Vec3d position(x, y, z);
             auto block = generators::make_sphere(position, 4, color, generators::MEDIUM);
