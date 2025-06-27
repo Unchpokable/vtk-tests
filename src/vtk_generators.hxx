@@ -15,15 +15,15 @@ enum Resolution : int
     HIGH = 4,
     PLEASEHELP = 5
 };
-}
+} // namespace generators
 
-namespace generators 
+namespace generators
 {
 vtkSmartPointer<vtkPolyData> make_sphere(const common::Vec3d& pos, double size, Resolution resolution);
-vtkSmartPointer<vtkPolyData> make_sphere(const common::Vec3d& pos, double size, const common::Colord& color, 
-    Resolution resolution);
-vtkSmartPointer<vtkPolyData> make_cylinder(const common::Vec3d& pos, double radius, double length, 
-    const common::Colord& color, Resolution resolution);
-}
+vtkSmartPointer<vtkPolyData> make_sphere(
+    const common::Vec3d& pos, double size, const common::Colord& color, Resolution resolution);
+vtkSmartPointer<vtkPolyData> make_cylinder(
+    const common::Vec3d& pos, double radius, double length, const common::Colord& color, Resolution resolution);
+} // namespace generators
 
 #endif // VTK generators
