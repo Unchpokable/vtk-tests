@@ -1,9 +1,12 @@
 # Add executable with main source
 add_executable(${PROJECT_NAME}  main.cxx
-                                composite_renderer.cxx 
+                                composite_scene_object.cxx 
                                 utils.cxx
                                 vtk_generators.cxx
-                                common_types.cxx)
+                                common_types.cxx
+                                composite_picker.cxx
+                                layered_renderer.cxx
+                                composite_scene_globals.cxx)
 
 # To add more sources: add them to the add_executable line above
 # Example: add_executable(${PROJECT_NAME} main.cxx other_source.cxx another_file.cxx)

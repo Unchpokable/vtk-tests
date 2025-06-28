@@ -2,15 +2,14 @@
 #define UNC_COMPOSITE_RENDERER_H
 
 #include "common_types.hxx"
+#include "composite_scene_globals.hxx"
 
 namespace scene
 {
-class CompositeRenderer
+class CompositeSceneObject
 {
 public:
-    using id_type = vtkIdType;
-
-    CompositeRenderer(id_type uid);
+    CompositeSceneObject(id_type uid);
 
     /// @brief Adds a new polydata block
     /// @param poly_data block to be added

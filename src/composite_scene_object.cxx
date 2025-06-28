@@ -1,9 +1,9 @@
 #include "pch.h"
 
-#include "composite_renderer.hxx"
+#include "composite_scene_object.hxx"
 #include "utils.hxx"
 
-scene::CompositeRenderer::CompositeRenderer(id_type uid) : _uid(uid)
+scene::CompositeSceneObject::CompositeSceneObject(id_type uid) : _uid(uid)
 {
     _data_set = vtkSmartPointer<vtkMultiBlockDataSet>::New();
     _data_set->SetNumberOfBlocks(0);
@@ -20,7 +20,7 @@ scene::CompositeRenderer::CompositeRenderer(id_type uid) : _uid(uid)
     _actor->PickableOn();
 }
 
-scene::CompositeRenderer::id_type scene::CompositeRenderer::add_block(vtkSmartPointer<vtkPolyData>& poly_data)
+scene::id_type scene::CompositeSceneObject::add_block(vtkSmartPointer<vtkPolyData>& poly_data)
 {
     _source_data.insert_or_assign(_counter_id, poly_data);
     _instance_to_block.insert_or_assign(_counter_id, _inserter_id);
@@ -35,7 +35,7 @@ scene::CompositeRenderer::id_type scene::CompositeRenderer::add_block(vtkSmartPo
     return _counter_id - 1;
 }
 
-void scene::CompositeRenderer::remove_block(id_type instance_id)
+void scene::CompositeSceneObject::remove_block(id_type instance_id)
 {
     if(!_instance_to_block.contains(instance_id)) {
         throw std::runtime_error("Trying to remove a non-existing block!");
@@ -47,7 +47,7 @@ void scene::CompositeRenderer::remove_block(id_type instance_id)
     _block_to_instance.erase(block_id);
 }
 
-void scene::CompositeRenderer::set_renderer(const vtkSmartPointer<vtkRenderer>& renderer)
+void scene::CompositeSceneObject::set_renderer(const vtkSmartPointer<vtkRenderer>& renderer)
 {
     if(_renderer) {
         _renderer->RemoveActor(_actor);
@@ -60,7 +60,7 @@ void scene::CompositeRenderer::set_renderer(const vtkSmartPointer<vtkRenderer>& 
     }
 }
 
-void scene::CompositeRenderer::update()
+void scene::CompositeSceneObject::update()
 {
     _inserter_id = 0;
     _instance_to_block.clear();
@@ -81,12 +81,12 @@ void scene::CompositeRenderer::update()
     _mapper->Update();
 }
 
-void scene::CompositeRenderer::clear()
+void scene::CompositeSceneObject::clear()
 {
     _renderer->RemoveActor(_actor);
 }
 
-void scene::CompositeRenderer::set_color(id_type instance_id, common::Colord& color)
+void scene::CompositeSceneObject::set_color(id_type instance_id, common::Colord& color)
 {
     if(!_instance_to_block.contains(instance_id)) {
         throw std::runtime_error("Trying to modify non-existing block!");
@@ -114,12 +114,12 @@ void scene::CompositeRenderer::set_color(id_type instance_id, common::Colord& co
     _mapper->Update();
 }
 
-scene::CompositeRenderer::id_type scene::CompositeRenderer::get_instance_id(id_type block_id) const
+scene::id_type scene::CompositeSceneObject::get_instance_id(id_type block_id) const
 {
     return _block_to_instance.at(block_id);
 }
 
-vtkPolyData* scene::CompositeRenderer::get_instance_block(id_type instance_id) const
+vtkPolyData* scene::CompositeSceneObject::get_instance_block(id_type instance_id) const
 {
     if(!_source_data.contains(instance_id)) {
         throw std::runtime_error("Trying to get a non-existing instance");
@@ -128,7 +128,7 @@ vtkPolyData* scene::CompositeRenderer::get_instance_block(id_type instance_id) c
     return _source_data.at(instance_id);
 }
 
-vtkPolyData* scene::CompositeRenderer::get_block(id_type block_id) const
+vtkPolyData* scene::CompositeSceneObject::get_block(id_type block_id) const
 {
     if(!_block_to_instance.contains(block_id)) {
         throw std::runtime_error("Trying to get a non-existing block");
@@ -138,7 +138,7 @@ vtkPolyData* scene::CompositeRenderer::get_block(id_type block_id) const
     return _source_data.at(instance_id);
 }
 
-scene::CompositeRenderer::id_type scene::CompositeRenderer::get_block_id(vtkPolyData* poly_data) const
+scene::id_type scene::CompositeSceneObject::get_block_id(vtkPolyData* poly_data) const 
 {
     auto data = poly_data->GetCellData();
 
@@ -158,12 +158,12 @@ scene::CompositeRenderer::id_type scene::CompositeRenderer::get_block_id(vtkPoly
     return value;
 }
 
-void scene::CompositeRenderer::set_pickable(bool enabled)
+void scene::CompositeSceneObject::set_pickable(bool enabled)
 {
     _actor->SetPickable(enabled);
 }
 
-bool scene::CompositeRenderer::is_owns(vtkPolyData* poly_data) const
+bool scene::CompositeSceneObject::is_owns(vtkPolyData* poly_data) const
 {
     auto id = get_block_id(poly_data);
     if(id == -1) {
@@ -173,7 +173,7 @@ bool scene::CompositeRenderer::is_owns(vtkPolyData* poly_data) const
     return id == _uid;
 }
 
-void scene::CompositeRenderer::append_data_block(vtkPolyData* poly_data, const char* container_name, int data)
+void scene::CompositeSceneObject::append_data_block(vtkPolyData* poly_data, const char* container_name, int data)
 {
     vtkNew<vtkIntArray> container;
     container->SetName(container_name);

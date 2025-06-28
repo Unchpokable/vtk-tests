@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "composite_renderer.hxx"
+#include "composite_scene_object.hxx"
 #include "vtk_generators.hxx"
 
 static void perf_count(vtkObject* caller, unsigned long, void*, void*)
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     if(std::strcmp(run_parameter, "-c") == 0) {
         std::cout << "Requested composite rendering\n";
 
-        auto composite_renderer = new scene::CompositeRenderer(0);
+        auto composite_renderer = new scene::CompositeSceneObject(0);
 
         double x {}, y {}, z {};
         for(auto i = 0; i < 5120; ++i) {
