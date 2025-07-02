@@ -1,4 +1,4 @@
-#include "pch.hh"
+#include "pch.hxx"
 
 #include "composite_picker.hxx"
 

@@ -22,7 +22,7 @@ class LayeredRenderer
     /// @return ID of layer which is top layer now
     id_type pop_layer();
 
-    SceneIndex add_prop(id_type layer_id, vtkSmartPointer<vtkProp3D>& prop);
+    SceneIndex add_prop(id_type layer_id, const vtkSmartPointer<vtkProp3D>& prop);
     void remove_prop(id_type layer_id, id_type prop_id);
 
     void move_prop(id_type prop_id, id_type from_layer, id_type to_layer);
