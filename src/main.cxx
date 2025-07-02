@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
     vtkNew<vtkRenderWindow> renderWindow;
     renderWindow->SetSize(800, 600);
-    renderWindow->SetWindowName("VTK Minimal Example");
+    renderWindow->SetWindowName("Layered Multiblock composite renderer test");
 
     vtkNew<vtkRenderWindowInteractor> interactor;
     interactor->SetRenderWindow(renderWindow);
@@ -35,6 +35,7 @@ int main(int argc, char** argv)
 
     auto layered_renderer = std::make_unique<scene::LayeredRenderer>(renderWindow);
     auto layer_id = layered_renderer->push_layer();
+    auto overlay_id = layered_renderer->push_layer();
 
     layered_renderer->set_backgroud(common::Colord(0.3, 0.3, 0.3));
 
@@ -45,7 +46,7 @@ int main(int argc, char** argv)
         auto composite_object = std::make_unique<scene::CompositeSceneObject>(0);
 
         double x {}, y {}, z {};
-        for(auto i = 0; i < 5120; ++i) {
+        for(auto i = 0; i < 1; ++i) {
             // Claude codes lmao
             // Generate rainbow gradient: hue varies from 0 to 360 degrees
             float hue = (float(i) / 129.0f) * 360.0f;
@@ -129,6 +130,17 @@ int main(int argc, char** argv)
             layered_renderer->add_prop(layer_id, actor);
         }
     }
+
+    auto overlay_composite = std::make_unique<scene::CompositeSceneObject>(1);
+
+    auto overlaying_sphere =
+        generators::make_sphere(common::Vec3d(0, 0, 0), 3, common::Colord(1.0, 0.0, 0.0), generators::DOGSHIT);
+
+    overlay_composite->add_block(overlaying_sphere);
+    overlay_composite->set_renderer(layered_renderer->get_layer(overlay_id));
+    overlay_composite->update();
+
+    layered_renderer->fix_clip();
 
     renderWindow->Render();
     interactor->Start();

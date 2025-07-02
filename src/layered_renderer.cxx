@@ -8,6 +8,7 @@ scene::LayeredRenderer::LayeredRenderer(vtkRenderWindow* render_window)
     : _window(render_window), _layers_count(0), _layers_inserter_index(0)
 {
     _base_renderer = vtkSmartPointer<vtkRenderer>::New();
+    _base_renderer->SetLayer(0);
 
     _window->AddRenderer(_base_renderer);
     _window->SetNumberOfLayers(1);
@@ -21,11 +22,11 @@ scene::id_type scene::LayeredRenderer::push_layer()
     layer->SetBackgroundAlpha(0);
 
     _layers.insert_or_assign(_layers_inserter_index, layer);
-    layer->SetLayer(_layers_inserter_index);
-
     ++_layers_inserter_index;
 
-    _window->SetNumberOfLayers(_layers_inserter_index);
+    layer->SetLayer(_layers_inserter_index);
+
+    _window->SetNumberOfLayers(_layers_inserter_index + 1);
     _window->AddRenderer(layer);
 
     ++_layers_count;
@@ -139,8 +140,19 @@ void scene::LayeredRenderer::update() const
 
 void scene::LayeredRenderer::fix_clip() const
 {
+    _base_renderer->ResetCameraClippingRange();
+
     for(auto& layer : _layers | std::views::values) {
         layer->ResetCameraClippingRange();
+    }
+}
+
+void scene::LayeredRenderer::reset_camera() const
+{
+    _base_renderer->ResetCamera();
+
+    for(auto& layer : _layers | std::views::values) {
+        layer->ResetCamera();
     }
 }
 
@@ -153,6 +165,35 @@ void scene::LayeredRenderer::set_backgroud(common::Colord color1, common::Colord
 {
     set_backgroud(color1);
     _base_renderer->SetBackground2(color2);
+}
+
+void scene::LayeredRenderer::set_mode(ProjectionMode mode)
+{
+    switch(mode) {
+        case Parallel:
+            parallel_projection();
+        case Perpective:
+            perpective_projection();
+    }
+}
+
+void scene::LayeredRenderer::parallel_projection()
+{
+    _base_renderer->GetActiveCamera()->ParallelProjectionOn();
+
+    for(auto& layer : _layers | std::views::values) {
+        layer->GetActiveCamera()->ParallelProjectionOn();
+    }
+}
+
+void scene::LayeredRenderer::perpective_projection()
+{
+
+    _base_renderer->GetActiveCamera()->ParallelProjectionOff();
+
+    for(auto& layer : _layers | std::views::values) {
+        layer->GetActiveCamera()->ParallelProjectionOff();
+    }
 }
 
 bool scene::LayeredRenderer::has_layer(id_type layer_id) const

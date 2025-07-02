@@ -7,6 +7,12 @@ namespace scene
 class LayeredRenderer
 {
 public:
+    enum ProjectionMode
+    {
+        Parallel,
+        Perpective
+    };
+
     struct SceneIndex
     {
         id_type layer_id;
@@ -40,9 +46,15 @@ public:
 
     void update() const;
     void fix_clip() const;
+    void reset_camera() const;
 
     void set_backgroud(common::Colord color);
     void set_backgroud(common::Colord color1, common::Colord color2);
+
+    void set_mode(ProjectionMode mode);
+
+    void parallel_projection();
+    void perpective_projection();
 
 private:
     bool has_layer(id_type layer_id) const;

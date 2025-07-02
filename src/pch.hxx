@@ -13,6 +13,7 @@
 #include <vector>
 
 // include vtk
+#include <vtk/vtkCamera.h>
 #include <vtk/vtkCellData.h>
 #include <vtk/vtkCellPicker.h>
 #include <vtk/vtkInteractorStyleTrackballCamera.h>
