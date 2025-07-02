@@ -1,6 +1,7 @@
 #include "pch.hxx"
 
 #include "composite_scene_object.hxx"
+#include "layered_renderer.hxx"
 #include "vtk_generators.hxx"
 
 static void perf_count(vtkObject* caller, unsigned long, void*, void*)
@@ -22,11 +23,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    vtkNew<vtkRenderer> renderer;
-    renderer->SetBackground(0.1, 0.2, 0.4);
-
     vtkNew<vtkRenderWindow> renderWindow;
-    renderWindow->AddRenderer(renderer);
     renderWindow->SetSize(800, 600);
     renderWindow->SetWindowName("VTK Minimal Example");
 
@@ -36,15 +33,16 @@ int main(int argc, char** argv)
     vtkNew<vtkInteractorStyleTrackballCamera> style;
     interactor->SetInteractorStyle(style);
 
-    vtkNew<vtkCallbackCommand> callback;
-    callback->SetCallback(perf_count);
-    renderer->AddObserver(vtkCommand::EndEvent, callback);
+    auto layered_renderer = std::make_unique<scene::LayeredRenderer>(renderWindow);
+    auto layer_id = layered_renderer->push_layer();
+
+    layered_renderer->set_backgroud(common::Colord(0.3, 0.3, 0.3));
 
     auto run_parameter = argv[1];
     if(std::strcmp(run_parameter, "-c") == 0) {
         std::cout << "Requested composite rendering\n";
 
-        auto composite_renderer = new scene::CompositeSceneObject(0);
+        auto composite_object = std::make_unique<scene::CompositeSceneObject>(0);
 
         double x {}, y {}, z {};
         for(auto i = 0; i < 5120; ++i) {
@@ -94,17 +92,17 @@ int main(int argc, char** argv)
             common::Colord color(r + m, g + m, b + m);
             common::Vec3d position(x, y, z);
             auto block = generators::make_sphere(position, 4, generators::LOW);
-            auto block_id = composite_renderer->add_block(block);
-            composite_renderer->set_color(block_id, color);
+            auto block_id = composite_object->add_block(block);
+            composite_object->set_color(block_id, color);
 
             x += 10;
             y += 10;
             z += 10;
         }
 
-        composite_renderer->update();
+        composite_object->update();
 
-        composite_renderer->set_renderer(renderer);
+        composite_object->set_renderer(layered_renderer->get_layer(layer_id));
     }
     else if(std::strcmp(run_parameter, "-a") == 0) {
         std::cout << "Requested actors rendering\n";
@@ -128,7 +126,7 @@ int main(int argc, char** argv)
             y += 10;
             z += 10;
 
-            renderer->AddActor(actor);
+            layered_renderer->add_prop(layer_id, actor);
         }
     }
 

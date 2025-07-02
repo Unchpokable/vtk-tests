@@ -4,6 +4,15 @@
 
 #include "tassert.hxx"
 
+scene::LayeredRenderer::LayeredRenderer(vtkRenderWindow* render_window)
+    : _window(render_window), _layers_count(0), _layers_inserter_index(0)
+{
+    _base_renderer = vtkSmartPointer<vtkRenderer>::New();
+
+    _window->AddRenderer(_base_renderer);
+    _window->SetNumberOfLayers(1);
+}
+
 scene::id_type scene::LayeredRenderer::push_layer()
 {
     auto layer = vtkSmartPointer<vtkRenderer>::New();
@@ -19,17 +28,21 @@ scene::id_type scene::LayeredRenderer::push_layer()
     _window->SetNumberOfLayers(_layers_inserter_index);
     _window->AddRenderer(layer);
 
-    return _layers_inserter_index;
+    ++_layers_count;
+
+    return _layers_inserter_index - 1;
 }
 
 scene::id_type scene::LayeredRenderer::pop_layer()
 {
-    auto layer = _layers.at(_layers_inserter_index);
+    auto layer = _layers.at(_layers_inserter_index - 1);
     _layers.erase(_layers_inserter_index);
     --_layers_inserter_index;
 
     _window->SetNumberOfLayers(_layers_inserter_index);
     _window->RemoveRenderer(layer);
+
+    --_layers_count;
 
     return _layers_inserter_index;
 }
@@ -85,8 +98,14 @@ vtkProp3D* scene::LayeredRenderer::get_prop(id_type layer_id, id_type prop_id)
 vtkProp3D* scene::LayeredRenderer::take_prop(id_type layer_id, id_type prop_id)
 {
     auto prop = get_prop(layer_id, prop_id);
+    auto layer = get_layer(layer_id);
 
+    _layered_props[layer_id].erase(prop_id);
     --_prop_inserter_indexes[layer_id];
+
+    layer->RemoveViewProp(prop);
+
+    return prop;
 }
 
 void scene::LayeredRenderer::reset_clipping_range()
@@ -111,6 +130,29 @@ vtkSmartPointer<vtkRenderer> scene::LayeredRenderer::get_layer(id_type id) const
 vtkSmartPointer<vtkRenderer> scene::LayeredRenderer::get_base_layer() const
 {
     return _base_renderer;
+}
+
+void scene::LayeredRenderer::update() const
+{
+    _window->Render();
+}
+
+void scene::LayeredRenderer::fix_clip() const
+{
+    for(auto& layer : _layers | std::views::values) {
+        layer->ResetCameraClippingRange();
+    }
+}
+
+void scene::LayeredRenderer::set_backgroud(common::Colord color)
+{
+    _base_renderer->SetBackground(color);
+}
+
+void scene::LayeredRenderer::set_backgroud(common::Colord color1, common::Colord color2)
+{
+    set_backgroud(color1);
+    _base_renderer->SetBackground2(color2);
 }
 
 bool scene::LayeredRenderer::has_layer(id_type layer_id) const

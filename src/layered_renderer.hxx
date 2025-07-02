@@ -6,13 +6,14 @@ namespace scene
 {
 class LayeredRenderer
 {
+public:
     struct SceneIndex
     {
         id_type layer_id;
         id_type prop_id;
     };
 
-    explicit LayeredRenderer();
+    explicit LayeredRenderer(vtkRenderWindow* render_window);
 
     /// @brief Adds a new layer on top
     /// @return ID of new created layer
@@ -36,6 +37,12 @@ class LayeredRenderer
     vtkSmartPointer<vtkRenderer> get_layer(id_type id) const;
 
     vtkSmartPointer<vtkRenderer> get_base_layer() const;
+
+    void update() const;
+    void fix_clip() const;
+
+    void set_backgroud(common::Colord color);
+    void set_backgroud(common::Colord color1, common::Colord color2);
 
 private:
     bool has_layer(id_type layer_id) const;

@@ -28,7 +28,7 @@ message("VTK_FOUND: ${VTK_FOUND}")
 message("VTK_INCLUDE_DIRS: ${VTK_INCLUDE_DIRS}")
 message("VTK_LIBRARIES: ${VTK_LIBRARIES}")
 
-target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
+target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hxx)
 
 target_include_directories(${PROJECT_NAME} PRIVATE 
     ${VTK_INCLUDE_DIRS}
