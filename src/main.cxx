@@ -40,13 +40,21 @@ int main(int argc, char** argv)
     layered_renderer->set_backgroud(common::Colord(0.3, 0.3, 0.3));
 
     auto run_parameter = argv[1];
+    int spheres_count;
+    if(argc >= 3) {
+        std::sscanf(argv[2], "%i", &spheres_count);
+    }
+    else {
+        spheres_count = 1;
+    }
+
     if(std::strcmp(run_parameter, "-c") == 0) {
         std::cout << "Requested composite rendering\n";
 
         auto composite_object = std::make_unique<scene::CompositeSceneObject>(0);
 
         double x {}, y {}, z {};
-        for(auto i = 0; i < 1; ++i) {
+        for(auto i = 0; i < spheres_count; ++i) {
             // Claude codes lmao
             // Generate rainbow gradient: hue varies from 0 to 360 degrees
             float hue = (float(i) / 129.0f) * 360.0f;
@@ -109,7 +117,7 @@ int main(int argc, char** argv)
         std::cout << "Requested actors rendering\n";
 
         double x {}, y {}, z {};
-        for(auto i = 0; i < 5120; ++i) {
+        for(auto i = 0; i < spheres_count; ++i) {
             common::Colord color(0.3, 0.8, 0.1);
             common::Vec3d position(x, y, z);
             auto block = generators::make_sphere(position, 4, color, generators::MEDIUM);
@@ -134,7 +142,7 @@ int main(int argc, char** argv)
     auto overlay_composite = std::make_unique<scene::CompositeSceneObject>(1);
 
     auto overlaying_sphere =
-        generators::make_sphere(common::Vec3d(0, 0, 0), 3, common::Colord(1.0, 0.0, 0.0), generators::DOGSHIT);
+        generators::make_sphere(common::Vec3d(0, 0, 0), 3, common::Colord(1.0, 0.0, 0.0), generators::HIGH);
 
     overlay_composite->add_block(overlaying_sphere);
     overlay_composite->set_renderer(layered_renderer->get_layer(overlay_id));
