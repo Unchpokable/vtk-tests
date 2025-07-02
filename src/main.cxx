@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "pch.hxx"
 
 #include "composite_scene_object.hxx"
 #include "vtk_generators.hxx"

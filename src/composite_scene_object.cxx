@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "pch.hxx"
 
 #include "composite_scene_object.hxx"
 #include "utils.hxx"
@@ -138,7 +138,7 @@ vtkPolyData* scene::CompositeSceneObject::get_block(id_type block_id) const
     return _source_data.at(instance_id);
 }
 
-scene::id_type scene::CompositeSceneObject::get_block_id(vtkPolyData* poly_data) const 
+scene::id_type scene::CompositeSceneObject::get_block_id(vtkPolyData* poly_data) const
 {
     auto data = poly_data->GetCellData();
 
