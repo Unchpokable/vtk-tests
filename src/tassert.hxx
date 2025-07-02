@@ -4,7 +4,7 @@
 
 namespace assert
 {
-template <typename Condition, typename... Args>
+template<typename Condition, typename... Args>
     requires std::convertible_to<Condition, bool>
 void cond_fmt(Condition&& cond, std::format_string<Args...> fmt,
     const std::source_location& loc = std::source_location::current(), Args&&... args)
