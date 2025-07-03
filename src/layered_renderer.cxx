@@ -188,7 +188,6 @@ void scene::LayeredRenderer::parallel_projection()
 
 void scene::LayeredRenderer::perpective_projection()
 {
-
     _base_renderer->GetActiveCamera()->ParallelProjectionOff();
 
     for(auto& layer : _layers | std::views::values) {
@@ -206,6 +205,7 @@ bool scene::LayeredRenderer::has_prop(id_type layer_id, id_type prop_id) const
     if(!has_layer(layer_id)) {
         return false;
     }
+
     auto it = _layered_props.find(layer_id);
     if(it == _layered_props.end()) {
         return false;
