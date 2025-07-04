@@ -44,6 +44,8 @@ inline constexpr std::array<unsigned char, 3> make_uchar_color(const common::Col
     // clang-format on
 }
 
+std::string print_boundings(const vtkBoundingBox& box);
+
 } // namespace utils
 
 #endif // Utils

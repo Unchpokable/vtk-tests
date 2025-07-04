@@ -2,6 +2,8 @@
 #include <format>
 #include <source_location>
 
+#define SRC_LOC std::source_location::current()
+
 namespace assert
 {
 template<typename Condition, typename... Args>

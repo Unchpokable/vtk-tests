@@ -3,6 +3,7 @@
 #include "layered_renderer.hxx"
 
 #include "tassert.hxx"
+#include "utils.hxx"
 
 scene::LayeredRenderer::LayeredRenderer(vtkRenderWindow* render_window)
     : _window(render_window), _layers_count(0), _layers_inserter_index(0)
@@ -138,13 +139,26 @@ void scene::LayeredRenderer::update() const
     _window->Render();
 }
 
-void scene::LayeredRenderer::fix_clip() const
+void scene::LayeredRenderer::adjust() const
 {
-    _base_renderer->ResetCameraClippingRange();
+    auto full_box = get_total_boundings();
+    assert::cond_fmt(full_box.IsValid(), "Invalid geometry: {}", SRC_LOC, utils::print_boundings(full_box));
 
-    for(auto& layer : _layers | std::views::values) {
-        layer->ResetCameraClippingRange();
-    }
+    double bounds[6];
+    full_box.GetBounds(bounds);
+
+    Eigen::Vector3d min_point(bounds[0], bounds[2], bounds[4]);
+    Eigen::Vector3d max_point(bounds[1], bounds[3], bounds[5]);
+
+    Eigen::Vector3d size(max_point - min_point);
+
+    double diagonal = size.norm();
+
+    double near_plane = diagonal * 0.001;
+    double far_plane = diagonal * 10.0;
+
+    auto camera = _base_renderer->GetActiveCamera();
+    camera->SetClippingRange(near_plane, far_plane);
 }
 
 void scene::LayeredRenderer::reset_camera() const
@@ -193,6 +207,46 @@ void scene::LayeredRenderer::perpective_projection()
     for(auto& layer : _layers | std::views::values) {
         layer->GetActiveCamera()->ParallelProjectionOff();
     }
+}
+
+vtkBoundingBox scene::LayeredRenderer::get_total_boundings() const
+{
+    vtkBoundingBox result_boundings;
+
+    auto base_layer_actors = _base_renderer->GetActors();
+
+    base_layer_actors->InitTraversal();
+
+    int actors_processed { 0 };
+
+    while(auto actor = base_layer_actors->GetNextActor()) {
+        double bounds[6];
+        actor->GetBounds(bounds);
+
+        result_boundings.AddBounds(bounds);
+        ++actors_processed;
+    }
+
+    for(auto& layer: _layers | std::views::values) {
+        auto actors_on_layer = layer->GetActors();
+        actors_on_layer->InitTraversal();
+
+        while(auto actor = actors_on_layer->GetNextActor()) {
+            double bounds[6];
+            actor->GetBounds(bounds);
+
+            result_boundings.AddBounds(bounds);
+            ++actors_processed;
+        }
+    }
+
+    std::cout << actors_processed;
+
+    if(actors_processed == 0) {
+        return vtkBoundingBox(0, 1, 0, 1, 0, 1);
+    }
+
+    return result_boundings;
 }
 
 bool scene::LayeredRenderer::has_layer(id_type layer_id) const

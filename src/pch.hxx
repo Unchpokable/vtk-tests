@@ -23,7 +23,6 @@
 #include <vtk/vtkSmartPointer.h>
 #include <vtk/vtkTransform.h>
 #include <vtk/vtkTransformPolyDataFilter.h>
-
 #include <vtk/vtkActor.h>
 #include <vtk/vtkCallbackCommand.h>
 #include <vtk/vtkCompositeDataDisplayAttributes.h>
@@ -35,8 +34,10 @@
 #include <vtk/vtkPolyData.h>
 #include <vtk/vtkPolyDataMapper.h>
 #include <vtk/vtkSphereSource.h>
-
 #include <vtk/vtkCylinder.h>
 #include <vtk/vtkSphere.h>
+
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Dense>
 
 #endif // vtk-composite-tests precompiled header

@@ -112,6 +112,8 @@ int main(int argc, char** argv)
         composite_object->update();
 
         composite_object->set_renderer(layered_renderer->get_layer(layer_id));
+
+        layered_renderer->adjust();
     }
     else if(std::strcmp(run_parameter, "-a") == 0) {
         std::cout << "Requested actors rendering\n";
@@ -148,7 +150,7 @@ int main(int argc, char** argv)
     overlay_composite->set_renderer(layered_renderer->get_layer(overlay_id));
     overlay_composite->update();
 
-    layered_renderer->fix_clip();
+    layered_renderer->adjust();
 
     renderWindow->Render();
     interactor->Start();

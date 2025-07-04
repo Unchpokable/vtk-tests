@@ -35,6 +35,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     /usr/include/vtk
 )
 
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    /usr/include/eigen3
+)
+
 # Make VTK modules available to the project
 vtk_module_autoinit(
     TARGETS ${PROJECT_NAME}

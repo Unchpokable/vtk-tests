@@ -45,7 +45,7 @@ public:
     vtkSmartPointer<vtkRenderer> get_base_layer() const;
 
     void update() const;
-    void fix_clip() const;
+    void adjust() const;
     void reset_camera() const;
 
     void set_backgroud(common::Colord color);
@@ -57,6 +57,8 @@ public:
     void perpective_projection();
 
 private:
+    vtkBoundingBox get_total_boundings() const;
+
     bool has_layer(id_type layer_id) const;
     bool has_prop(id_type layer_id, id_type prop_id) const;
 
