@@ -159,6 +159,12 @@ void scene::LayeredRenderer::adjust() const
 
     auto camera = _base_renderer->GetActiveCamera();
     camera->SetClippingRange(near_plane, far_plane);
+    _base_renderer->ResetCamera();
+
+    for(auto& layer: _layers | std::views::values) {
+        layer->GetActiveCamera()->SetClippingRange(near_plane, far_plane);
+        layer->ResetCamera();
+    }
 }
 
 void scene::LayeredRenderer::reset_camera() const
