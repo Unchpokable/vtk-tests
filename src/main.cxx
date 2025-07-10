@@ -1,9 +1,33 @@
 #include "pch.hxx"
 
+#include "composite_picker.hxx"
 #include "composite_scene_object.hxx"
 #include "layered_renderer.hxx"
 #include "vtk_generators.hxx"
 
+static std::unique_ptr<scene::LayeredRenderer> layered_renderer;
+static std::unique_ptr<scene::CompositeSceneObject> composite_object;
+
+class CustomInteractorStyle : public vtkInteractorStyleTrackballCamera
+{
+public:
+    static CustomInteractorStyle* New();
+    vtkTypeMacro(CustomInteractorStyle, vtkInteractorStyleTrackballCamera);
+
+    inline void OnRightButtonDown() override
+    {
+        auto position = Interactor->GetEventPosition();
+        common::Vec3d click(position[0], position[2], 0);
+
+        auto picked_instance = scene::pick::perform_pick(*composite_object, click);
+
+        std::cout << "Picked block with id: " << picked_instance;
+    }
+};
+
+vtkStandardNewMacro(CustomInteractorStyle);
+
+// static is a C thing but i dont care actually in this project
 static void perf_count(vtkObject* caller, unsigned long, void*, void*)
 {
     vtkRenderer* renderer = static_cast<vtkRenderer*>(caller);
@@ -30,10 +54,10 @@ int main(int argc, char** argv)
     vtkNew<vtkRenderWindowInteractor> interactor;
     interactor->SetRenderWindow(renderWindow);
 
-    vtkNew<vtkInteractorStyleTrackballCamera> style;
+    vtkNew<CustomInteractorStyle> style;
     interactor->SetInteractorStyle(style);
 
-    auto layered_renderer = std::make_unique<scene::LayeredRenderer>(renderWindow);
+    layered_renderer = std::make_unique<scene::LayeredRenderer>(renderWindow);
     auto layer_id = layered_renderer->push_layer();
     auto overlay_id = layered_renderer->push_layer();
 
@@ -51,7 +75,7 @@ int main(int argc, char** argv)
     if(std::strcmp(run_parameter, "-c") == 0) {
         std::cout << "Requested composite rendering\n";
 
-        auto composite_object = std::make_unique<scene::CompositeSceneObject>(0);
+        composite_object = std::make_unique<scene::CompositeSceneObject>(0);
 
         double x {}, y {}, z {};
         for(auto i = 0; i < spheres_count; ++i) {

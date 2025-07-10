@@ -23,25 +23,28 @@ scene::id_type scene::LayeredRenderer::push_layer()
     layer->SetBackgroundAlpha(0);
 
     _layers.insert_or_assign(_layers_inserter_index, layer);
-    ++_layers_inserter_index;
+    
+    // Set layer number to _layers_inserter_index + 1 (base layer is 0)
+    layer->SetLayer(_layers_inserter_index + 1);
 
-    layer->SetLayer(_layers_inserter_index);
-
-    _window->SetNumberOfLayers(_layers_inserter_index + 1);
+    _window->SetNumberOfLayers(_layers_inserter_index + 2);
     _window->AddRenderer(layer);
 
     ++_layers_count;
+    
+    auto layer_id = _layers_inserter_index;
+    ++_layers_inserter_index;
 
-    return _layers_inserter_index - 1;
+    return layer_id;
 }
 
 scene::id_type scene::LayeredRenderer::pop_layer()
 {
-    auto layer = _layers.at(_layers_inserter_index - 1);
-    _layers.erase(_layers_inserter_index);
     --_layers_inserter_index;
+    auto layer = _layers.at(_layers_inserter_index);
+    _layers.erase(_layers_inserter_index);
 
-    _window->SetNumberOfLayers(_layers_inserter_index);
+    _window->SetNumberOfLayers(_layers_inserter_index + 1);
     _window->RemoveRenderer(layer);
 
     --_layers_count;
@@ -192,8 +195,10 @@ void scene::LayeredRenderer::set_mode(ProjectionMode mode)
     switch(mode) {
         case Parallel:
             parallel_projection();
+            break;
         case Perpective:
             perpective_projection();
+            break;
     }
 }
 
