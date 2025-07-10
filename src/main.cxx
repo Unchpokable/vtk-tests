@@ -21,7 +21,12 @@ public:
 
         auto picked_instance = scene::pick::perform_pick(*composite_object, click);
 
-        std::cout << "Picked block with id: " << picked_instance;
+        if(picked_instance == scene::pick::NO_PICK) {
+            std::cout << "Missed or VTK pick from list still broken\n";
+            return;
+        }
+
+        std::cout << "Picked block with id: " << picked_instance << "\n";
     }
 };
 

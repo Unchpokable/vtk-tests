@@ -23,15 +23,14 @@ scene::id_type scene::LayeredRenderer::push_layer()
     layer->SetBackgroundAlpha(0);
 
     _layers.insert_or_assign(_layers_inserter_index, layer);
-    
-    // Set layer number to _layers_inserter_index + 1 (base layer is 0)
-    layer->SetLayer(_layers_inserter_index + 1);
 
     _window->SetNumberOfLayers(_layers_inserter_index + 2);
+    layer->SetLayer(_layers_inserter_index + 1);
+
     _window->AddRenderer(layer);
 
     ++_layers_count;
-    
+
     auto layer_id = _layers_inserter_index;
     ++_layers_inserter_index;
 
@@ -164,7 +163,7 @@ void scene::LayeredRenderer::adjust() const
     camera->SetClippingRange(near_plane, far_plane);
     _base_renderer->ResetCamera();
 
-    for(auto& layer: _layers | std::views::values) {
+    for(auto& layer : _layers | std::views::values) {
         layer->GetActiveCamera()->SetClippingRange(near_plane, far_plane);
         layer->ResetCamera();
     }
@@ -238,7 +237,7 @@ vtkBoundingBox scene::LayeredRenderer::get_total_boundings() const
         ++actors_processed;
     }
 
-    for(auto& layer: _layers | std::views::values) {
+    for(auto& layer : _layers | std::views::values) {
         auto actors_on_layer = layer->GetActors();
         actors_on_layer->InitTraversal();
 
